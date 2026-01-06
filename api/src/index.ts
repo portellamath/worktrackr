@@ -8,12 +8,10 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// health check
 app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
-// login fake (apenas dev)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
@@ -33,10 +31,8 @@ app.post("/login", (req, res) => {
   return res.status(401).json({ error: "Credenciais inválidas" });
 });
 
-// 🔥 MONTA O DOMÍNIO
 app.use("/projects", projectsRoutes);
 
-// 🚀 START SERVER
 app.listen(PORT, () => {
   console.log(`API running on http://localhost:${PORT}`);
 });
