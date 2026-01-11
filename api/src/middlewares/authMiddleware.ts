@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 
 export function authMiddleware(
@@ -13,15 +14,20 @@ export function authMiddleware(
 
   const token = authHeader.replace("Bearer ", "");
 
-  if (token !== "fake-jwt-token") {
+  try {
+    const payload = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as any;
+
+    req.user = {
+      id: payload.id,
+      companyId: payload.companyId,
+      role: payload.role,
+    };
+
+    next();
+  } catch (err) {
     return res.status(401).json({ error: "Token inválido" });
   }
-
- req.user = {
-  id: 1,
-  companyId: 1,
-  role: "ADMIN"
-}
-
-  next();
 }

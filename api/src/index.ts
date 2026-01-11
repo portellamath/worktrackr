@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import projectsRoutes from "./routes/projects";
+import authRoutes from "./routes/auth";
 
 const app = express();
 const PORT = 3001;
@@ -12,25 +13,10 @@ app.get("/health", (_, res) => {
   res.json({ status: "ok" });
 });
 
-app.post("/login", (req, res) => {
-  const { email, password } = req.body;
+// AUTH REAL (JWT)
+app.use("/auth", authRoutes);
 
-  if (email === "admin@worktrackr.com" && password === "123456") {
-    return res.json({
-      token: "fake-jwt-token",
-      user: {
-        id: 1,
-        name: "Admin",
-        email,
-        companyId: 42,
-        role: "ADMIN"
-      }
-    });
-  }
-
-  return res.status(401).json({ error: "Credenciais inválidas" });
-});
-
+// ROTAS PROTEGIDAS
 app.use("/projects", projectsRoutes);
 
 app.listen(PORT, () => {

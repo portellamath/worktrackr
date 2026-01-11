@@ -1,38 +1,27 @@
 import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcrypt";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // COMPANY
-  const company = await prisma.company.upsert({
+  const passwordHash = await bcrypt.hash("admin123", 10);
+
+  await prisma.company.upsert({
     where: { id: 1 },
     update: {},
-    create: {
-      id: 1,
-      name: "WorkTrackr"
-    }
+    create: { id: 1, name: "WorkTrackr" }
   });
 
-  // USER ADMIN
   await prisma.user.upsert({
-    where: { email: "admin@worktrackr.com" },
-    update: {},
-    create: {
-      email: "admin@worktrackr.com",
-      password: "hashed-password-fake",
-      role: "ADMIN",
-      companyId: company.id
-    }
-  });
-
-  console.log(" Seed executado com sucesso");
+  where: { email: "admin@worktrackr.com" },
+  update: {},
+  create: {
+    email: "admin@worktrackr.com",
+    password: passwordHash,
+    role: "ADMIN",
+    companyId: 1
+  }
+});
 }
 
-main()
-  .catch(e => {
-    console.error(e);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().finally(() => prisma.$disconnect());
