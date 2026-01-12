@@ -1,9 +1,9 @@
-version: "3.9"
+version: "3.8"
 
 services:
   postgres:
     image: postgres:16
-    container_name: worktrackr-db
+    container_name: worktrackr-postgres
     restart: always
     ports:
       - "5432:5432"
