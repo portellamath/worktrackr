@@ -1,8 +1,19 @@
-import { Router } from "express";
-import { login } from "./auth.controller";
+import { Request, Response } from "express";
+import prisma from "../../lib/prisma";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcrypt";
+import crypto from "crypto";
 
-const router = Router();
+export async function logout(req: Request, res: Response) {
+  await prisma.refreshToken.updateMany({
+    where: {
+      userId: req.user!.id,
+      revoked: false
+    },
+    data: {
+      revoked: true
+    }
+  });
 
-router.post("/login", login);
-
-export default router;
+  return res.status(204).send();
+}
