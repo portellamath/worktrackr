@@ -44,6 +44,61 @@ O objetivo do projeto é colocar em prática conceitos de:
 - Hash de senhas (bcrypt)
 
 ---
+## Modelo de Dados
+
+```mermaid
+erDiagram
+    Company ||--o{ User : has
+    Company ||--o{ Project : has
+    Project ||--o{ Task : has
+    User ||--o{ RefreshToken : has
+
+    Company {
+        int id PK
+        string name
+        datetime createdAt
+    }
+
+    User {
+        int id PK
+        int companyId FK
+        string name
+        string email
+        string password
+        enum role
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Project {
+        int id PK
+        int companyId FK
+        string name
+        enum status
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    Task {
+        int id PK
+        int projectId FK
+        string title
+        enum status
+        datetime dueDate
+        datetime createdAt
+        datetime updatedAt
+    }
+
+    RefreshToken {
+        int id PK
+        int userId FK
+        string token
+        boolean revoked
+        datetime createdAt
+    }
+```
+
+---
 
 # Principais Decisões Técnicas
 
